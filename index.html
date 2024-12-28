@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Three.js Scroll Controlled Animation with Text Overlay</title>
+    <title>Three.js Scroll Controlled Animation with Draco Compression</title>
     <style>
         body {
             margin: 0;
@@ -19,7 +19,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1; /* Keep the canvas in the background */
+            z-index: -1;
         }
         .content {
             padding: 20px;
@@ -29,12 +29,11 @@
     </style>
 </head>
 <body>
-    <!-- Canvas for Three.js -->
     <canvas id="three-canvas"></canvas>
 
-    <!-- Large amount of Lorem Ipsum text -->
     <div class="content">
         <h1>Scroll to Control the Animation</h1>
+        <p>Explore the animation by scrolling through the page. The model is compressed using Draco for faster loading.</p>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum malesuada vehicula ligula, non condimentum purus auctor a. Fusce id libero vel erat euismod cursus. Suspendisse potenti. Nulla nec consequat eros. Aenean interdum mauris ut augue tristique, eget vehicula lacus hendrerit. Proin convallis nulla eget velit lacinia, nec tincidunt ipsum pulvinar.</p>
         <p>Integer nec fermentum nulla. Quisque finibus, erat non vulputate suscipit, est nisi tincidunt lacus, vel facilisis odio magna id enim. Sed interdum risus et libero euismod, ac laoreet nulla sollicitudin. Maecenas faucibus eros at nisi venenatis, quis posuere elit vehicula. Curabitur facilisis, ligula nec dapibus hendrerit, dolor purus tincidunt elit, id luctus ligula urna nec lacus.</p>
         <p>Phasellus fermentum turpis a magna varius, in consequat sapien sodales. Nulla facilisi. Nulla malesuada ligula ac massa tincidunt, at scelerisque sem ultricies. Nulla facilisi. Praesent non lacinia justo. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Nulla facilisi.</p>
@@ -57,28 +56,29 @@
                 Sed tempus congue nibh nec pretium. Ut interdum ut magna ac finibus. Praesent bibendum odio eget interdum placerat. Morbi vel pretium nulla. Proin mi nibh, eleifend bibendum venenatis a, eleifend id neque. Nullam nec imperdiet est. Praesent semper risus feugiat mi consequat rutrum. In eros elit, dignissim a neque a, laoreet congue urna. Aenean a justo sit amet odio vestibulum gravida. In hac habitasse platea dictumst. Proin sit amet ultricies nisi. Curabitur non consequat orci. Phasellus sollicitudin sapien sem.
                 
                 Pellentesque aliquet libero sit amet mattis mollis. Nulla tempor hendrerit lorem, iaculis ornare nibh vehicula et. Vestibulum pretium diam eu eros vulputate tincidunt. Proin pharetra nulla in sodales tristique. Nullam sed magna dignissim, viverra odio ac, consectetur ante. Donec luctus urna dapibus libero pharetra, eget luctus quam vestibulum. Mauris gravida pellentesque ipsum, ac iaculis nibh sagittis at. Nam nisi diam, rhoncus sed commodo in, egestas sit amet elit. Sed quis lorem quis lectus laoreet facilisis. Sed at ligula non tortor posuere vulputate. Vestibulum vel ipsum diam. Morbi rhoncus dignissim scelerisque. Maecenas eget nunc eros. Mauris eleifend dolor in justo iaculis ultricies. Nullam varius sed leo in viverra. Pellentesque tempus elit metus, vel porta erat facilisis sed.</p>
+    
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/DRACOLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/RGBELoader.js"></script>
+
     <script>
-        // Variables
         let camera, scene, renderer;
         let mixer, clock;
-        let animationDuration = 1; // Default duration, will be updated based on animations
+        let animationDuration = 1;
         let scrollPosition = 0;
         let isAnimating = false;
-        let lastScrollTime = Date.now(); // To track the last scroll time
-        const scrollDelay = 10; // Delay in ms to stop animation after scroll stops
-        let storedAnimationTime = 0; // Store the animation time when scrolling stops
-        let lastAnimationTime = 0; // Store the last frame of the animation
-        let isAnimationCompleted = false; // Flag to check if animation is completed
+        let lastScrollTime = Date.now();
+        const scrollDelay = 10;
+        let storedAnimationTime = 0;
+        let lastAnimationTime = 0;
+        let isAnimationCompleted = false;
 
-        const END_FRAME_VALUE = 5.0014389367412315; // Define the specific end frame value
+        const END_FRAME_VALUE = 5.0014389367412315;
 
-        // Initialize Three.js
         function init() {
             const canvas = document.getElementById('three-canvas');
             renderer = new THREE.WebGLRenderer({ canvas });
@@ -89,18 +89,15 @@
 
             clock = new THREE.Clock();
 
-            // Load HDR Environment Map
             const rgbeLoader = new THREE.RGBELoader();
             rgbeLoader.load('Sky.Hdr', (texture) => {
                 texture.mapping = THREE.EquirectangularReflectionMapping;
                 texture.encoding = THREE.sRGBEncoding;
                 scene.environment = texture;
-
-                scene.background = texture; // Optional: Use HDR as the background
+                scene.background = texture;
                 scene.envMapIntensity = 0.5;
             });
 
-            // Lighting Setup
             const keyLight = new THREE.SpotLight(0xffffff, 1, 1000);
             keyLight.position.set(5, 5, 5);
             scene.add(keyLight);
@@ -113,10 +110,14 @@
             backLight.position.set(0, 5, -5);
             scene.add(backLight);
 
-            // Load GLTF Model
+            const dracoLoader = new THREE.DRACOLoader();
+            dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/libs/draco/');
+
             const loader = new THREE.GLTFLoader();
+            loader.setDRACOLoader(dracoLoader);
+
             loader.load(
-                'Car(Backup)8.glb',
+                'Car(Backup)2.glb', 
                 (gltf) => {
                     scene.add(gltf.scene);
 

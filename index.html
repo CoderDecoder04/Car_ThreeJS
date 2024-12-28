@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js Scroll Controlled Animation with Text Overlay</title>
+    <style>
+        body {
+            margin: 0;
+            overflow-y: scroll;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+        canvas {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Keep the canvas in the background */
+        }
+        .content {
+            padding: 20px;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <!-- Canvas for Three.js -->
+    <canvas id="three-canvas"></canvas>
+
+    <!-- Large amount of Lorem Ipsum text -->
+    <div class="content">
+        <h1>Scroll to Control the Animation</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum malesuada vehicula ligula, non condimentum purus auctor a. Fusce id libero vel erat euismod cursus. Suspendisse potenti. Nulla nec consequat eros. Aenean interdum mauris ut augue tristique, eget vehicula lacus hendrerit. Proin convallis nulla eget velit lacinia, nec tincidunt ipsum pulvinar.</p>
+        <p>Integer nec fermentum nulla. Quisque finibus, erat non vulputate suscipit, est nisi tincidunt lacus, vel facilisis odio magna id enim. Sed interdum risus et libero euismod, ac laoreet nulla sollicitudin. Maecenas faucibus eros at nisi venenatis, quis posuere elit vehicula. Curabitur facilisis, ligula nec dapibus hendrerit, dolor purus tincidunt elit, id luctus ligula urna nec lacus.</p>
+        <p>Phasellus fermentum turpis a magna varius, in consequat sapien sodales. Nulla facilisi. Nulla malesuada ligula ac massa tincidunt, at scelerisque sem ultricies. Nulla facilisi. Praesent non lacinia justo. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Nulla facilisi.</p>
+        <p>Sed tincidunt, nisl vel auctor faucibus, felis mi cursus nisi, a dapibus nunc tortor nec risus. Nulla ut sem a arcu sollicitudin tempus. Ut hendrerit malesuada orci vel maximus. Integer nec sapien sit amet ligula bibendum cursus. Aliquam erat volutpat. Integer tristique, lacus at porttitor ullamcorper, nisi augue sagittis risus, eget vehicula velit odio nec augue.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur mattis dignissim tellus, sit amet tincidunt diam mattis id. Fusce dictum nunc nec commodo facilisis. Proin laoreet placerat enim, fringilla lacinia arcu venenatis in. Mauris porttitor cursus ex, viverra ornare tellus condimentum id. Donec id neque eu lorem ornare fermentum nec eget est. Vestibulum ipsum sem, pretium non mauris sit amet, rutrum venenatis risus. Donec fringilla enim sit amet dui condimentum pharetra. Nullam volutpat nec purus nec pharetra. Maecenas pretium, magna sed aliquet eleifend, sapien massa posuere elit, eu bibendum velit nibh sit amet lorem. Aliquam felis ligula, dictum sit amet magna tincidunt, accumsan aliquet nibh. Sed a erat vel felis gravida rutrum feugiat non velit. Etiam quis risus lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent auctor, diam a consequat consequat, quam felis imperdiet justo, eu posuere nunc ex et arcu. Maecenas ac condimentum odio, id lacinia justo. Suspendisse condimentum egestas nisi.
+
+            Ut pharetra orci eget mollis accumsan. Nulla pretium feugiat velit vel pharetra. Suspendisse hendrerit venenatis metus eget rhoncus. Nunc sit amet dignissim neque. Aenean sit amet ligula vel nisl ornare pellentesque. Fusce pretium elit vestibulum, sollicitudin sapien vel, eleifend justo. Nam odio ipsum, ultricies eget gravida vel, pharetra nec libero. Ut blandit varius tortor. Duis pharetra dolor at aliquet rutrum. Nullam accumsan neque quam, eget molestie sapien pulvinar ac. Nunc tellus odio, tincidunt eget rutrum in, semper ac nulla. Ut eleifend nibh libero, nec rhoncus magna luctus non. In aliquet posuere augue sed blandit. Proin dignissim auctor urna, ac euismod quam ornare nec. Nunc maximus mi urna, in condimentum nulla elementum non.
+            
+            Sed rhoncus diam ac lorem dignissim facilisis. Nullam erat urna, dapibus quis dignissim eget, iaculis nec neque. Mauris a sem neque. Etiam euismod tempus nisi et malesuada. Nulla ullamcorper eget ipsum finibus lobortis. Proin magna arcu, pretium id porttitor at, eleifend et est. Nunc ac purus cursus, commodo leo non, rutrum libero.
+            
+            Sed tempus congue nibh nec pretium. Ut interdum ut magna ac finibus. Praesent bibendum odio eget interdum placerat. Morbi vel pretium nulla. Proin mi nibh, eleifend bibendum venenatis a, eleifend id neque. Nullam nec imperdiet est. Praesent semper risus feugiat mi consequat rutrum. In eros elit, dignissim a neque a, laoreet congue urna. Aenean a justo sit amet odio vestibulum gravida. In hac habitasse platea dictumst. Proin sit amet ultricies nisi. Curabitur non consequat orci. Phasellus sollicitudin sapien sem.
+            
+            Pellentesque aliquet libero sit amet mattis mollis. Nulla tempor hendrerit lorem, iaculis ornare nibh vehicula et. Vestibulum pretium diam eu eros vulputate tincidunt. Proin pharetra nulla in sodales tristique. Nullam sed magna dignissim, viverra odio ac, consectetur ante. Donec luctus urna dapibus libero pharetra, eget luctus quam vestibulum. Mauris gravida pellentesque ipsum, ac iaculis nibh sagittis at. Nam nisi diam, rhoncus sed commodo in, egestas sit amet elit. Sed quis lorem quis lectus laoreet facilisis. Sed at ligula non tortor posuere vulputate. Vestibulum vel ipsum diam. Morbi rhoncus dignissim scelerisque. Maecenas eget nunc eros. Mauris eleifend dolor in justo iaculis ultricies. Nullam varius sed leo in viverra. Pellentesque tempus elit metus, vel porta erat facilisis sed.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur mattis dignissim tellus, sit amet tincidunt diam mattis id. Fusce dictum nunc nec commodo facilisis. Proin laoreet placerat enim, fringilla lacinia arcu venenatis in. Mauris porttitor cursus ex, viverra ornare tellus condimentum id. Donec id neque eu lorem ornare fermentum nec eget est. Vestibulum ipsum sem, pretium non mauris sit amet, rutrum venenatis risus. Donec fringilla enim sit amet dui condimentum pharetra. Nullam volutpat nec purus nec pharetra. Maecenas pretium, magna sed aliquet eleifend, sapien massa posuere elit, eu bibendum velit nibh sit amet lorem. Aliquam felis ligula, dictum sit amet magna tincidunt, accumsan aliquet nibh. Sed a erat vel felis gravida rutrum feugiat non velit. Etiam quis risus lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent auctor, diam a consequat consequat, quam felis imperdiet justo, eu posuere nunc ex et arcu. Maecenas ac condimentum odio, id lacinia justo. Suspendisse condimentum egestas nisi.
+
+                Ut pharetra orci eget mollis accumsan. Nulla pretium feugiat velit vel pharetra. Suspendisse hendrerit venenatis metus eget rhoncus. Nunc sit amet dignissim neque. Aenean sit amet ligula vel nisl ornare pellentesque. Fusce pretium elit vestibulum, sollicitudin sapien vel, eleifend justo. Nam odio ipsum, ultricies eget gravida vel, pharetra nec libero. Ut blandit varius tortor. Duis pharetra dolor at aliquet rutrum. Nullam accumsan neque quam, eget molestie sapien pulvinar ac. Nunc tellus odio, tincidunt eget rutrum in, semper ac nulla. Ut eleifend nibh libero, nec rhoncus magna luctus non. In aliquet posuere augue sed blandit. Proin dignissim auctor urna, ac euismod quam ornare nec. Nunc maximus mi urna, in condimentum nulla elementum non.
+                
+                Sed rhoncus diam ac lorem dignissim facilisis. Nullam erat urna, dapibus quis dignissim eget, iaculis nec neque. Mauris a sem neque. Etiam euismod tempus nisi et malesuada. Nulla ullamcorper eget ipsum finibus lobortis. Proin magna arcu, pretium id porttitor at, eleifend et est. Nunc ac purus cursus, commodo leo non, rutrum libero.
+                
+                Sed tempus congue nibh nec pretium. Ut interdum ut magna ac finibus. Praesent bibendum odio eget interdum placerat. Morbi vel pretium nulla. Proin mi nibh, eleifend bibendum venenatis a, eleifend id neque. Nullam nec imperdiet est. Praesent semper risus feugiat mi consequat rutrum. In eros elit, dignissim a neque a, laoreet congue urna. Aenean a justo sit amet odio vestibulum gravida. In hac habitasse platea dictumst. Proin sit amet ultricies nisi. Curabitur non consequat orci. Phasellus sollicitudin sapien sem.
+                
+                Pellentesque aliquet libero sit amet mattis mollis. Nulla tempor hendrerit lorem, iaculis ornare nibh vehicula et. Vestibulum pretium diam eu eros vulputate tincidunt. Proin pharetra nulla in sodales tristique. Nullam sed magna dignissim, viverra odio ac, consectetur ante. Donec luctus urna dapibus libero pharetra, eget luctus quam vestibulum. Mauris gravida pellentesque ipsum, ac iaculis nibh sagittis at. Nam nisi diam, rhoncus sed commodo in, egestas sit amet elit. Sed quis lorem quis lectus laoreet facilisis. Sed at ligula non tortor posuere vulputate. Vestibulum vel ipsum diam. Morbi rhoncus dignissim scelerisque. Maecenas eget nunc eros. Mauris eleifend dolor in justo iaculis ultricies. Nullam varius sed leo in viverra. Pellentesque tempus elit metus, vel porta erat facilisis sed.</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/RGBELoader.js"></script>
+    <script>
+        // Variables
+        let camera, scene, renderer;
+        let mixer, clock;
+        let animationDuration = 1; // Default duration, will be updated based on animations
+        let scrollPosition = 0;
+        let isAnimating = false;
+        let lastScrollTime = Date.now(); // To track the last scroll time
+        const scrollDelay = 10; // Delay in ms to stop animation after scroll stops
+        let storedAnimationTime = 0; // Store the animation time when scrolling stops
+        let lastAnimationTime = 0; // Store the last frame of the animation
+        let isAnimationCompleted = false; // Flag to check if animation is completed
+
+        const END_FRAME_VALUE = 5.0014389367412315; // Define the specific end frame value
+
+        // Initialize Three.js
+        function init() {
+            const canvas = document.getElementById('three-canvas');
+            renderer = new THREE.WebGLRenderer({ canvas });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x000000);
+
+            clock = new THREE.Clock();
+
+            // Load HDR Environment Map
+            const rgbeLoader = new THREE.RGBELoader();
+            rgbeLoader.load('Sky.Hdr', (texture) => {
+                texture.mapping = THREE.EquirectangularReflectionMapping;
+                texture.encoding = THREE.sRGBEncoding;
+                scene.environment = texture;
+
+                scene.background = texture; // Optional: Use HDR as the background
+                scene.envMapIntensity = 0.5;
+            });
+
+            // Lighting Setup
+            const keyLight = new THREE.SpotLight(0xffffff, 1, 1000);
+            keyLight.position.set(5, 5, 5);
+            scene.add(keyLight);
+
+            const fillLight = new THREE.SpotLight(0xaaaaaa, 0.6, 100);
+            fillLight.position.set(-5, 5, 5);
+            scene.add(fillLight);
+
+            const backLight = new THREE.SpotLight(0xff00ff, 0.5, 1000);
+            backLight.position.set(0, 5, -5);
+            scene.add(backLight);
+
+            // Load GLTF Model
+            const loader = new THREE.GLTFLoader();
+            loader.load(
+                'Car(Backup)8.glb',
+                (gltf) => {
+                    scene.add(gltf.scene);
+
+                    if (gltf.cameras && gltf.cameras.length > 0) {
+                        camera = gltf.cameras[0];
+                        camera.aspect = window.innerWidth / window.innerHeight;
+                        camera.updateProjectionMatrix();
+                    } else {
+                        camera = new THREE.PerspectiveCamera(
+                            75,
+                            window.innerWidth / window.innerHeight,
+                            0.1,
+                            1000
+                        );
+                        camera.position.set(0, 3.5, 5);
+                    }
+
+                    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+                    mixer = new THREE.AnimationMixer(gltf.scene);
+                    gltf.animations.forEach((clip) => {
+                        const action = mixer.clipAction(clip);
+                        action.clampWhenFinished = true;
+                        action.stop();
+                        animationDuration = clip.duration;
+                    });
+
+                    console.log("Loaded animations:", gltf.animations.map(a => a.name));
+                    console.log("Animation duration:", animationDuration);
+                },
+                (xhr) => {
+                    console.log(`Loading model: ${(xhr.loaded / xhr.total) * 100}%`);
+                },
+                (error) => {
+                    console.error('Error loading model:', error);
+                }
+            );
+
+            window.addEventListener('resize', onWindowResize);
+            window.addEventListener('scroll', onScroll);
+
+            animate();
+        }
+
+        function onWindowResize() {
+            if (camera) {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+            }
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function onScroll() {
+            scrollPosition = window.scrollY;
+            lastScrollTime = Date.now();
+            updateAnimationFromScroll();
+        }
+
+        function updateAnimationFromScroll() {
+            if (mixer) {
+                const maxScroll = document.body.scrollHeight - window.innerHeight;
+                const normalizedScroll = scrollPosition / maxScroll;
+
+                if (maxScroll > 0) {
+                    const animationTime = normalizedScroll * animationDuration;
+                    storedAnimationTime = animationTime;
+                    lastAnimationTime = animationTime;
+
+                    if (!isAnimating) {
+                        const clip = mixer._actions[0];
+                        clip.play();
+                        isAnimating = true;
+                    }
+
+                    if (animationTime >= END_FRAME_VALUE) {
+                        isAnimationCompleted = true;
+                        mixer.setTime(END_FRAME_VALUE);
+                    } else {
+                        isAnimationCompleted = false;
+                        mixer.setTime(animationTime);
+                    }
+                }
+            }
+        }
+
+        function checkForInactivity() {
+            if (Date.now() - lastScrollTime > scrollDelay) {
+                if (isAnimating) {
+                    loopStoredAnimation();
+                }
+            }
+        }
+
+        function loopStoredAnimation() {
+            if (mixer) {
+                if (isAnimationCompleted) {
+                    mixer.setTime(END_FRAME_VALUE);
+                } else {
+                    mixer.setTime(storedAnimationTime);
+                }
+                requestAnimationFrame(loopStoredAnimation);
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const deltaTime = clock.getDelta();
+            if (mixer) {
+                mixer.update(deltaTime);
+            }
+
+            renderer.render(scene, camera);
+            checkForInactivity();
+        }
+
+        init();
+    </script>
+</body>
+</html>

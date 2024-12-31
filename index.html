@@ -10,7 +10,7 @@
             overflow-y: scroll;
             background-color: #f0f0f0;
             font-family: Arial, sans-serif;
-            color: #ffffff;
+            color: #333;
         }
         canvas {
             display: block;
@@ -21,9 +21,7 @@
             height: 100%;
             z-index: -1;
         }
-         .content {
-           /* background-color: #C94065;
-            opacity: 0.3; */
+        .content {
             padding: 20px;
             font-size: 18px;
             line-height: 1.6;
@@ -35,6 +33,7 @@
 
     <div class="content">
         <h1>Scroll to Control the Animation</h1>
+        <p>Explore the animation by scrolling through the page. The model is compressed using Draco for faster loading.</p>
         <p>Explore the animation by scrolling through the page. The model is compressed using Draco for faster loading.</p>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum malesuada vehicula ligula, non condimentum purus auctor a. Fusce id libero vel erat euismod cursus. Suspendisse potenti. Nulla nec consequat eros. Aenean interdum mauris ut augue tristique, eget vehicula lacus hendrerit. Proin convallis nulla eget velit lacinia, nec tincidunt ipsum pulvinar.</p>
         <p>Integer nec fermentum nulla. Quisque finibus, erat non vulputate suscipit, est nisi tincidunt lacus, vel facilisis odio magna id enim. Sed interdum risus et libero euismod, ac laoreet nulla sollicitudin. Maecenas faucibus eros at nisi venenatis, quis posuere elit vehicula. Curabitur facilisis, ligula nec dapibus hendrerit, dolor purus tincidunt elit, id luctus ligula urna nec lacus.</p>
@@ -96,6 +95,7 @@
         let storedAnimationTime = 0;
         let lastAnimationTime = 0;
         let isAnimationCompleted = false;
+        let needsUpdate = true;
 
         const END_FRAME_VALUE = 4.9;
 
@@ -203,6 +203,7 @@
         function onScroll() {
             scrollPosition = window.scrollY;
             lastScrollTime = Date.now();
+            needsUpdate = true;
             updateAnimationFromScroll();
         }
 
@@ -230,6 +231,9 @@
                         mixer.setTime(animationTime);
                     }
                 }
+                else{
+                    mixer.setTime(animationTime);
+                }
             }
         }
 
@@ -237,6 +241,7 @@
             if (Date.now() - lastScrollTime > scrollDelay) {
                 if (isAnimating) {
                     loopStoredAnimation();
+                    needsUpdate = false
                 }
             }
         }
@@ -254,14 +259,17 @@
 
         function animate() {
             requestAnimationFrame(animate);
+            checkForInactivity();
 
             const deltaTime = clock.getDelta();
-            if (mixer) {
+            if (mixer && needsUpdate) {
                 mixer.update(deltaTime);
+            }
+            else{
+                mixer.setTime(storedAnimationTime);
             }
 
             renderer.render(scene, camera);
-            checkForInactivity();
         }
 
         init();

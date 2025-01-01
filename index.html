@@ -97,7 +97,7 @@
         let isAnimationCompleted = false;
         let needsUpdate = true;
 
-        const END_FRAME_VALUE = 4.9;
+        const END_FRAME_VALUE = 10.7;
 
         function init() {
             const canvas = document.getElementById('three-canvas');
@@ -147,7 +147,7 @@
             loader.setDRACOLoader(dracoLoader);
 
             loader.load(
-                'scene(18).glb', 
+                'scene(19).glb', 
                 (gltf) => {
                     scene.add(gltf.scene);
 
@@ -209,13 +209,16 @@
 
         function updateAnimationFromScroll() {
             if (mixer) {
-                const maxScroll = document.body.scrollHeight - window.innerHeight;
-                const normalizedScroll = scrollPosition / maxScroll;
+                let maxScroll = document.body.scrollHeight - window.innerHeight;
+                let normalizedScroll = scrollPosition / maxScroll;
+                let animationTime = normalizedScroll * animationDuration;
+                let A_Time = animationTime.toFixed(2);
 
-                if (maxScroll > 0) {
-                    const animationTime = normalizedScroll * animationDuration;
-                    storedAnimationTime = animationTime;
-                    lastAnimationTime = animationTime;
+                if (maxScroll > 0 && lastAnimationTime != A_Time) {
+                    
+                    
+                    storedAnimationTime = A_Time;
+                    lastAnimationTime = A_Time;
                     console.log(lastAnimationTime);
                     if (!isAnimating) {
                         const clip = mixer._actions[0];
@@ -228,17 +231,17 @@
                         mixer.setTime(END_FRAME_VALUE);
                     } else {
                         isAnimationCompleted = false;
-                        mixer.setTime(animationTime);
+                        mixer.setTime(A_Time);
                     }
                 }
                 else{
-                    mixer.setTime(animationTime);
+                    mixer.setTime(A_Time);
                 }
             }
         }
 
         function checkForInactivity() {
-            if (Date.now() - lastScrollTime > scrollDelay) {
+            if (Date.now() - lastScrollTime > scrollDelay*10) {
                 if (isAnimating) {
                     loopStoredAnimation();
                     needsUpdate = false
